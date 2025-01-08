@@ -1,9 +1,11 @@
 import React from 'react';
 import './card.css';
+import { sounds } from '../utils/audioutils';
 
 const Card = ({ id, image, isFlipped, isMatched, onClick }) => {
   const handleClick = () => {
     if (!isFlipped && !isMatched) {
+      sounds.flip.play();
       onClick(id);
     }
   };

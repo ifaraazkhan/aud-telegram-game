@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
 import Card from './components/card';
 import './App.css';
+import { sounds } from './utils/audioutils';
 
 const CARD_PAIRS = 6;
 const EMOJIS = ['🎮', '🎲', '🎯', '🎪', '🎨', '🎭'];
@@ -19,6 +20,14 @@ function App() {
     initializeGame();
   }, []);
 
+  // Add useEffect to watch matchedPairs
+  useEffect(() => {
+    if (matchedPairs === CARD_PAIRS) {
+      handleGameComplete();
+    }
+  }, [matchedPairs]);
+
+
   const initializeGame = () => {
     const cardPairs = [...EMOJIS, ...EMOJIS]
       .sort(() => Math.random() - 0.5)
@@ -34,6 +43,28 @@ function App() {
     setMatchedPairs(0);
     setMoves(0);
     setIsChecking(false);
+  };
+
+  const handleGameComplete = () => {
+    sounds.victory.play();
+    // Add a small delay before showing popup
+    setTimeout(() => {
+      WebApp.showPopup({
+        title: '🎉 Congratulations!',
+        message: `You completed the game in ${moves} moves!`,
+        buttons: [
+          {
+            id: "restart",
+            type: "default",
+            text: "Play Again"
+          }
+        ]
+      }).then((buttonId) => {
+        if (buttonId) {
+          initializeGame();
+        }
+      });
+    }, 500);
   };
 
   const handleCardClick = (cardId) => {
@@ -67,6 +98,7 @@ function App() {
     const [firstCard, secondCard] = currentFlippedCards;
 
     if (firstCard.image === secondCard.image) {
+      sounds.match.play();
       // Match found
       createConfetti();
       setCards(cards.map(card => {
@@ -88,6 +120,13 @@ function App() {
     setFlippedCards([]);
     setIsChecking(false);
   };
+
+  // Add console logs to debug
+  useEffect(() => {
+    console.log('Current matched pairs:', matchedPairs);
+    console.log('Total pairs needed:', CARD_PAIRS);
+  }, [matchedPairs]);
+
 
   const handleRestart = () => {
     initializeGame();
