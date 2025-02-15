@@ -1,18 +1,20 @@
-.card {
+.custom_card_section .card {
     width: 80px;
     height: 80px;
     perspective: 1000px;
     margin: 5px;
     cursor: pointer;
     transition: transform 0.2s;
+    background: transparent;
+    border: 0;
   }
   
-  .card:hover {
+  .custom_card_section .card:hover {
     transform: scale(1.05);
     animation: pulse 1s infinite;
   }
   
-  .card-inner {
+  .custom_card_section .card-inner {
     position: relative;
     width: 100%;
     height: 100%;
@@ -23,12 +25,12 @@
     border-radius: 12px;
   }
   
-  .card.flipped .card-inner {
+  .custom_card_section .card.flipped .card-inner {
     transform: rotateY(180deg);
   }
   
-  .card-front,
-  .card-back {
+  .custom_card_section .card-front,
+  .custom_card_section .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -43,20 +45,20 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .card-front {
+  .custom_card_section .card-front {
     background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
   }
   
-  .card-back {
+  .custom_card_section .card-back {
     transform: rotateY(180deg);
     background: linear-gradient(135deg, #4facfe, #00f2fe);
   }
   
-  .card.matched {
+  .custom_card_section .card.matched {
     animation: celebrate 1s ease-out;
   }
   
-  .card.matched .card-back {
+  .custom_card_section .card.matched .card-back {
     background: linear-gradient(135deg, #43e97b, #38f9d7);
   }
   
@@ -72,7 +74,7 @@
     100% { transform: scale(1) rotate(0); }
   }
   
-  .card-front::before {
+  .custom_card_section .card-front::before {
     content: "?";
     font-size: 2.5em;
     font-weight: bold;

@@ -11,6 +11,7 @@ const Card = ({ id, image, isFlipped, isMatched, onClick }) => {
   };
 
   return (
+    <div className='custom_card_section'>
     <div 
       className={`card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''}`} 
       onClick={handleClick}
@@ -23,6 +24,7 @@ const Card = ({ id, image, isFlipped, isMatched, onClick }) => {
           {image}
         </div>
       </div>
+    </div>
     </div>
   );
 };

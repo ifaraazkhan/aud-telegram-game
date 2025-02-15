@@ -3,6 +3,8 @@ import WebApp from '@twa-dev/sdk';
 import Card from './components/card';
 import './App.css';
 import { sounds } from './utils/audioutils';
+import TelegramMiniAppSDK from 'telegram-miniapp-sdk';
+import RcModal from './elements/RcModal';
 
 const CARD_PAIRS = 6;
 const EMOJIS = ['🎮', '🎲', '🎯', '🎪', '🎨', '🎭'];
@@ -14,10 +16,31 @@ function App() {
   const [matchedPairs, setMatchedPairs] = useState(0);
   const [moves, setMoves] = useState(0);
   const [isChecking, setIsChecking] = useState(false); // Add this to prevent multiple clicks
-
+  const [offers, setOffers] = useState([]);
+  const [ads, setAds] = useState([]);
+  const [modalType, setModalType] = useState(null)
+  const [openModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  
   useEffect(() => {
     WebApp.ready();
     initializeGame();
+  }, []);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        await TelegramMiniAppSDK.initialize({
+          apiKey: "EjJvklHA2dq00xGJRuRa5QCr96dUAkdbJyxuixQ21ADYGcCeJT5LuDf2thVDlaLl"
+        });
+        return true;
+      } catch (error) {
+        console.error('Initialization failed:', error);
+      }
+    };
+
+    initialize();
   }, []);
 
   // Add useEffect to watch matchedPairs
@@ -69,10 +92,10 @@ function App() {
 
   const handleCardClick = (cardId) => {
     // Prevent clicking if already checking a pair or clicking the same card
-    if (isChecking || 
-        flippedCards.length === 2 || 
-        flippedCards.some(card => card.id === cardId) ||
-        cards.find(card => card.id === cardId).isMatched) {
+    if (isChecking ||
+      flippedCards.length === 2 ||
+      flippedCards.some(card => card.id === cardId) ||
+      cards.find(card => card.id === cardId).isMatched) {
       return;
     }
 
@@ -137,9 +160,54 @@ function App() {
     setTimeout(() => setShowConfetti(false), 2000);
   };
 
+  const getOffers = async () => {
+    try {
+      setIsLoading(true)
+      const sdk = TelegramMiniAppSDK.getInstance();
+      // Fetch offers
+      const offerWall = await sdk.getOfferWall("123",{limit: 10});
+      setOffers(offerWall);
+      setIsLoading(false)
+    } catch (error) {
+      console.error('Initialization failed:', error);
+    }
+  }
+
+  const getAd = async () => {
+    setIsLoading(true)
+    // Fetch display ads
+    const sdk = TelegramMiniAppSDK.getInstance();
+    const displayAds = await sdk.getAd("123");
+    setAds(displayAds.ads);
+    setIsLoading(false)
+  }
+
+  const showModal = async (modalName = null, data = null) => {
+    if (modalName == null) {
+      return false
+    }
+    let dataObj = data || {}
+    switch (modalName) {
+      case 'offerwall_modal':
+        getOffers();
+        if (data != null) {
+          setModalData(data)
+        }
+        setModalType(modalName)
+        setShowModal(true)
+        break;
+    }
+  }
+
+  const hideModal = (data = null) => {
+    setModalData({})
+    setModalType(null)
+    setShowModal(false)
+  }
+
   return (
     <div className="App">
-       {showConfetti && (
+      {showConfetti && (
         Array(20).fill().map((_, i) => (
           <div
             key={i}
@@ -170,10 +238,29 @@ function App() {
             />
           ))}
         </div>
+
+        <button className="btn btn-primary" onClick={() => showModal('offerwall_modal')}>
+          Show Offer wall
+        </button>
         <button className="restart-button" onClick={handleRestart}>
           Restart Game
         </button>
       </header>
+
+      {(() => {
+        if (modalType && modalType != '' && modalType != null) {
+          if (modalType == "offerwall_modal") {
+            return (
+              <RcModal
+              show={openModal}
+              modalType={modalType}
+              hideModal={hideModal}
+              modalData={{...modalData, offers: offers, isLoading: isLoading}}
+            />
+            );
+          }
+        }
+      })()}
     </div>
   );
 }
