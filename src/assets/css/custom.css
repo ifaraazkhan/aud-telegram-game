@@ -98,3 +98,13 @@
 .link_url{
   cursor: pointer !important;
 }
+.game_bg{
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+}
+.offers_link{
+    /* background: linear-gradient(45deg, #fbb72c, #1d2866); 
+    -webkit-background-clip: text; 
+    background-clip: text; */
+    color: #fbb72c;
+    cursor: pointer;
+}

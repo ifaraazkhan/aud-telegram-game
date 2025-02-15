@@ -3,7 +3,7 @@ import WebApp from '@twa-dev/sdk';
 import Card from './components/card';
 import './App.css';
 import { sounds } from './utils/audioutils';
-import TelegramMiniAppSDK from 'telegram-miniapp-sdk';
+import K2SDK from '@dat-platform/k2-adserving';
 import RcModal from './elements/RcModal';
 
 const CARD_PAIRS = 6;
@@ -31,7 +31,7 @@ function App() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        await TelegramMiniAppSDK.initialize({
+        await K2SDK.initialize({
           apiKey: "EjJvklHA2dq00xGJRuRa5QCr96dUAkdbJyxuixQ21ADYGcCeJT5LuDf2thVDlaLl"
         });
         return true;
@@ -163,7 +163,7 @@ function App() {
   const getOffers = async () => {
     try {
       setIsLoading(true)
-      const sdk = TelegramMiniAppSDK.getInstance();
+      const sdk = K2SDK.getInstance();
       // Fetch offers
       const offerWall = await sdk.getOfferWall("123",{limit: 10});
       setOffers(offerWall);
@@ -176,7 +176,7 @@ function App() {
   const getAd = async () => {
     setIsLoading(true)
     // Fetch display ads
-    const sdk = TelegramMiniAppSDK.getInstance();
+    const sdk = K2SDK.getInstance();
     const displayAds = await sdk.getAd("123");
     setAds(displayAds.ads);
     setIsLoading(false)
@@ -222,6 +222,12 @@ function App() {
       )}
       <header className="App-header">
         <h1>Audiencelogy Memory Game</h1>
+        <div>
+          <h6>🔥 Special Offers Just for You! 🔥</h6>
+        </div>
+        <a className='offers_link' onClick={() => showModal('offerwall_modal')}>
+          Show Offer wall
+        </a>
         <div className="game-stats">
           <p>Moves: {moves}</p>
           <p>Matches: {matchedPairs} / {CARD_PAIRS}</p>
@@ -239,9 +245,6 @@ function App() {
           ))}
         </div>
 
-        <button className="btn btn-primary" onClick={() => showModal('offerwall_modal')}>
-          Show Offer wall
-        </button>
         <button className="restart-button" onClick={handleRestart}>
           Restart Game
         </button>
