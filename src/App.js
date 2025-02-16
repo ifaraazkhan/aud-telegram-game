@@ -3,9 +3,110 @@ import WebApp from '@twa-dev/sdk';
 import Card from './components/card';
 import './App.css';
 import { sounds } from './utils/audioutils';
+import TelegramMiniAppSDK from 'telegram-miniapp-sdk';
+import AdComponent from './ads';
+
 
 const CARD_PAIRS = 6;
 const EMOJIS = ['🎮', '🎲', '🎯', '🎪', '🎨', '🎭'];
+
+// Offerwall Modal Componentt
+const OfferWallModal = ({ isOpen, onClose, offerwallData }) => {
+  
+  if (!isOpen) return null;
+
+  const handleTaskClick = (task) => {
+    if (task.clickTaskTrackingUrl) {
+      fetch(task.clickTaskTrackingUrl);
+    }
+    if (task.url) {
+      //window.location.href = task.url;
+      window.open(task.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        {/* Header */}
+        <div className="modal-header">
+          <div className="modal-title">
+            <span className="modal-game-title">🎮 Daily Rewards</span>
+            <br />
+            <span className="modal-username">
+              {WebApp.initDataUnsafe?.user?.username || 'Player'} ⚡
+            </span>
+          </div>
+          <button onClick={onClose} className="modal-close">
+            ✕
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="modal-body">
+          {offerwallData?.map((task, index) => (
+            <div 
+              key={index}
+              className="task-item"
+              onClick={() => handleTaskClick(task)}
+            >
+              <div className="task-content">
+                {/* Game Icon */}
+                <div className="task-icon">
+                  <img
+                    src={task.icon || '/api/placeholder/64/64'}
+                    alt=""
+                    className="game-icon"
+                  />
+                </div>
+
+                {/* Task Info */}
+                <div className="task-info">
+                  <h3 className="task-title">{task.title}</h3>
+                  <p className="task-description">
+                    {task.description || 'Complete this task to earn rewards!'}
+                  </p>
+                  
+                  {task.status && (
+                    <div className="task-progress">
+                      <div className="progress-bar">
+                        <div 
+                          className="progress-fill"
+                          style={{ width: `${task.status}%` }}
+                        />
+                      </div>
+                      <span className="progress-text">{task.status}%</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Reward Badge */}
+                <div className="task-reward">
+                  <span className="coin-icon"><img style={{width:"25px"}} src={"https://i.gifer.com/origin/e0/e02ce86bcfd6d1d6c2f775afb3ec8c01_w200.gif"}></img></span>
+                  <span className="reward-amount">
+                    {typeof task.reward === 'number' 
+                      ? task.reward > 1000 
+                        ? `UP TO ${Math.floor(task.reward/1000)}k`
+                        : task.reward
+                      : task.reward}
+                  </span>
+                  <span>{task.currency}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="modal-footer">
+          <div className="modal-section-title">
+            <small>➕ powered by Dat.network</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -13,7 +114,30 @@ function App() {
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedPairs, setMatchedPairs] = useState(0);
   const [moves, setMoves] = useState(0);
-  const [isChecking, setIsChecking] = useState(false); // Add this to prevent multiple clicks
+  const [isChecking, setIsChecking] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [offerwallData, setOfferwallData] = useState(null);
+
+  useEffect(() => {
+    const initializeSDK = async () => {
+      try {
+        const sdk_telegram = new TelegramMiniAppSDK({
+          apiKey: 'EjJvklHA2dq00xGJRuRa5QCr96dUAkdbJyxuixQ21ADYGcCeJT5LuDf2thVDlaLl',
+        });
+        
+        await sdk_telegram.init();
+        
+        // After initialization, get offers
+        const offersList = await sdk_telegram.getOfferWall();
+        console.log("list---",offersList);
+        setOfferwallData(offersList);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    initializeSDK();
+  }, []);
 
   useEffect(() => {
     WebApp.ready();
@@ -26,7 +150,6 @@ function App() {
       handleGameComplete();
     }
   }, [matchedPairs]);
-
 
   const initializeGame = () => {
     const cardPairs = [...EMOJIS, ...EMOJIS]
@@ -139,6 +262,7 @@ function App() {
 
   return (
     <div className="App">
+    
        {showConfetti && (
         Array(20).fill().map((_, i) => (
           <div
@@ -154,6 +278,9 @@ function App() {
       )}
       <header className="App-header">
         <h1>Audiencelogy Memory Game</h1>
+        <button onClick={() => setIsModalOpen(true)} className="earn-rewards-button">
+            ⚡ Earn Rewards
+          </button>
         <div className="game-stats">
           <p>Moves: {moves}</p>
           <p>Matches: {matchedPairs} / {CARD_PAIRS}</p>
@@ -174,6 +301,13 @@ function App() {
           Restart Game
         </button>
       </header>
+      <OfferWallModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        offerwallData={offerwallData}
+      />
+     
+     
     </div>
   );
 }

@@ -111,3 +111,229 @@
   0% { transform: translateY(0) rotate(0deg); }
   100% { transform: translateY(100vh) rotate(720deg); }
 }
+
+
+/* Modal Base Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+.modal-title {
+  color: white;
+}
+
+.modal-game-title {
+  font-size: 24px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.modal-username {
+  font-size: 16px;
+  opacity: 0.9;
+  color: #ffd700;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+/* Task Item Styles */
+.task-item {
+  background: white;
+  border-radius: 16px;
+  padding: 2px 5px 2px 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e1f43657;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  border-color: #4f46e5;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.task-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.game-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a1b2e;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.task-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+  text-align: left;
+  margin-top: -2px;
+}
+
+.task-progress {
+  margin-top: 12px;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  display: block;
+}
+
+.task-reward {
+  background: #10b981;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.coin-icon {
+  font-size: 20px;
+}
+
+.reward-amount {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.modal-footer {
+  padding: 16px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  color: #6b7280;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar Styles */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(107, 114, 128, 0.5);
+  border-radius: 3px;
+}
+
+/* Animation for reward amounts */
+.task-reward {
+  animation: rewardPulse 2s infinite;
+}
+
+@keyframes rewardPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
