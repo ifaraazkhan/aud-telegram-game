@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dat-platform/k2-adserving": "^1.0.1",
+    "@dat-platform/k2-adserving": "^1.0.2",
     "@twa-dev/sdk": "^8.0.2",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",
