@@ -42,7 +42,6 @@ function App() {
         });
         // K2SDK.getID()
         // setUserId(K2SDK.getID())
-        // K2SDK.getUserRewardsBalance();
         getUserRewardsBalance();
         return true;
       } catch (error) {
@@ -196,12 +195,8 @@ function App() {
 
   const getUserRewardsBalance = async () => {
     // Fetch user rewards
-    // const sdk = K2SDK.getInstance();
-    // const userRewards = await sdk.getUserRewards();
-    const payload = {
-      telegram_user_id: userId
-    }
-    const rDetails = await getRewardsBalance(payload);
+    const sdk = K2SDK.getInstance();
+    const rDetails = await sdk.getRewardBalance();
     if (rDetails) {
       setRewardDetails(rDetails)
       setRewardsBal(`${rDetails.reward_balance} ${rDetails?.reward_currency ?? ''}`)
