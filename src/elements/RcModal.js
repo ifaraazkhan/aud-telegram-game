@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Accordion, Button, Modal, OverlayTrigger, ProgressBar, Tooltip } from "react-bootstrap";
 import { RcImage } from './RcImage';
 import { icons } from '../constants';
+import { smartAlert } from '../utils/Helper';
 
 const RcModal = (props) => {
     const { modalType, formSubmit, show, hideModal, modalData, RmSize = "md", RmClass = "", formType = "", mClass } = props
@@ -12,12 +13,15 @@ const RcModal = (props) => {
 
     const openLink = (url) => {
         window.open(url, '_blank');
+        setTimeout(() => {
+            modalData && modalData.getUserRewardsBalance && modalData.getUserRewardsBalance()
+            smartAlert({title: "Success", message: "Offer has been claimed",type: 2});
+        }, 3000);
     }
 
     return (
         <>
             {modalType == 'offerwall_modal' &&
-
                 <Modal
                     show={show}
                     onHide={handleModalClose}

@@ -1,4 +1,4 @@
-.fs-9 {
+  .fs-9 {
     font-size: 9px !important;
   }
   .fs-10 {
@@ -107,4 +107,9 @@
     background-clip: text; */
     color: #fbb72c;
     cursor: pointer;
+}
+
+.reward_pt{
+  left: 105%;
+  top: -12px;
 }

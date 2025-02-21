@@ -5,6 +5,7 @@ import './App.css';
 import { sounds } from './utils/audioutils';
 import K2SDK from '@dat-platform/k2-adserving';
 import RcModal from './elements/RcModal';
+import { getRewardsBalance } from './libs/ApiEndpoints';
 
 const CARD_PAIRS = 6;
 const EMOJIS = ['🎮', '🎲', '🎯', '🎪', '🎨', '🎭'];
@@ -22,7 +23,12 @@ function App() {
   const [openModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  
+  const publisherId = "123";
+  const user_id = "umcgxsi5zrsm7d8tkgp";
+  const [userId, setUserId] = useState(user_id)
+  const [rewardDetails, setRewardDetails] = useState({})
+  const [rewardsBal, setRewardsBal] = useState('')
+
   useEffect(() => {
     WebApp.ready();
     initializeGame();
@@ -34,6 +40,10 @@ function App() {
         await K2SDK.initialize({
           apiKey: "EjJvklHA2dq00xGJRuRa5QCr96dUAkdbJyxuixQ21ADYGcCeJT5LuDf2thVDlaLl"
         });
+        // K2SDK.getID()
+        // setUserId(K2SDK.getID())
+        // K2SDK.getUserRewardsBalance();
+        getUserRewardsBalance();
         return true;
       } catch (error) {
         console.error('Initialization failed:', error);
@@ -49,6 +59,12 @@ function App() {
       handleGameComplete();
     }
   }, [matchedPairs]);
+  // Add console logs to debug
+  useEffect(() => {
+    console.log('Current matched pairs:', matchedPairs);
+    console.log('Total pairs needed:', CARD_PAIRS);
+  }, [matchedPairs]);
+
 
 
   const initializeGame = () => {
@@ -144,11 +160,7 @@ function App() {
     setIsChecking(false);
   };
 
-  // Add console logs to debug
-  useEffect(() => {
-    console.log('Current matched pairs:', matchedPairs);
-    console.log('Total pairs needed:', CARD_PAIRS);
-  }, [matchedPairs]);
+
 
 
   const handleRestart = () => {
@@ -165,7 +177,7 @@ function App() {
       setIsLoading(true)
       const sdk = K2SDK.getInstance();
       // Fetch offers
-      const offerWall = await sdk.getOfferWall("123",{limit:10});
+      const offerWall = await sdk.getOfferWall(publisherId, { limit: 10, user_unique_id: 12345678 });
       setOffers(offerWall);
       setIsLoading(false)
     } catch (error) {
@@ -180,6 +192,20 @@ function App() {
     const displayAds = await sdk.getAd("123");
     setAds(displayAds.ads);
     setIsLoading(false)
+  }
+
+  const getUserRewardsBalance = async () => {
+    // Fetch user rewards
+    // const sdk = K2SDK.getInstance();
+    // const userRewards = await sdk.getUserRewards();
+    const payload = {
+      telegram_user_id: userId
+    }
+    const rDetails = await getRewardsBalance(payload);
+    if (rDetails) {
+      setRewardDetails(rDetails)
+      setRewardsBal(`${rDetails.reward_balance} ${rDetails?.reward_currency ?? ''}`)
+    }
   }
 
   const showModal = async (modalName = null, data = null) => {
@@ -228,6 +254,15 @@ function App() {
         <a className='offers_link' onClick={() => showModal('offerwall_modal')}>
           Show Offer wall
         </a>
+        <div className="my-2">
+            <span className="">
+              {WebApp.initDataUnsafe?.user?.username || 'Player'} ⚡
+            </span>
+          </div>
+        <div className='d-flex align-items-center justify-content-start position-relative'>
+          <p className='fs-12 mb-0'>Total Rewards: <span className='fw-600'>{rewardsBal}</span></p>
+          <span className='fs-24 fw-600 link_url position-absolute reward_pt' onClick={() => getUserRewardsBalance()}>&#10226;</span>
+        </div>
         <div className="game-stats">
           <p>Moves: {moves}</p>
           <p>Matches: {matchedPairs} / {CARD_PAIRS}</p>
@@ -255,11 +290,11 @@ function App() {
           if (modalType == "offerwall_modal") {
             return (
               <RcModal
-              show={openModal}
-              modalType={modalType}
-              hideModal={hideModal}
-              modalData={{...modalData, offers: offers, isLoading: isLoading}}
-            />
+                show={openModal}
+                modalType={modalType}
+                hideModal={hideModal}
+                modalData={{ ...modalData, offers: offers, isLoading: isLoading, getUserRewardsBalance }}
+              />
             );
           }
         }
