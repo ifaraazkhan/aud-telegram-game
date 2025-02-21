@@ -42,7 +42,9 @@ function App() {
         });
         // K2SDK.getID()
         // setUserId(K2SDK.getID())
-        getUserRewardsBalance();
+        setTimeout(() => {
+          getUserRewardsBalance();
+        }, 500);
         return true;
       } catch (error) {
         console.error('Initialization failed:', error);
