@@ -245,7 +245,7 @@ function App() {
         ))
       )}
       <header className="App-header">
-        <h1>Audiencelogy Memory Game</h1>
+        <h1>DAT Platform Memory Game</h1>
         <div>
           <h6>🔥 Special Offers Just for You! 🔥</h6>
         </div>

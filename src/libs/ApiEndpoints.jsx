@@ -15,7 +15,7 @@ export const getRewardsBalance = async (data = {}) => {
         let data = res.results;
         result = data
     }else{
-      smartAlert({title: "Error", message: res?.message,type: 2});
+      //smartAlert({title: "Error", message: res?.message,type: 2});
     }
     return result
 }
