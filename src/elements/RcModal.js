@@ -13,10 +13,10 @@ const RcModal = (props) => {
 
     const openLink = (url) => {
         window.open(url, '_blank');
-        setTimeout(() => {
-            modalData && modalData.getUserRewardsBalance && modalData.getUserRewardsBalance()
-            smartAlert({title: "Success", message: "Offer has been claimed",type: 2});
-        }, 3000);
+        // setTimeout(() => {
+        //     modalData && modalData.getUserRewardsBalance && modalData.getUserRewardsBalance()
+        //     smartAlert({title: "Success", message: "Offer has been claimed",type: 2});
+        // }, 3000);
     }
 
     return (

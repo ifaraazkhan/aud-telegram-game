@@ -198,7 +198,7 @@ function App() {
   const getUserRewardsBalance = async () => {
     // Fetch user rewards
     const sdk = K2SDK.getInstance();
-    const rewardRes = await sdk.getRewardBalance(publisherId, { user_unique_id: 12345678 });
+    const rewardRes = await sdk.getRewardBalance();
     if (rewardRes && rewardRes.status == 200) {
       const rDetails = rewardRes.results
       setRewardDetails(rDetails)
