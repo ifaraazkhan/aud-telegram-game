@@ -178,7 +178,7 @@ function App() {
       setIsLoading(true)
       const sdk = K2SDK.getInstance();
       // Fetch offers
-      const offerWall = await sdk.getOfferWall(publisherId, { limit: 10, user_unique_id: 12345678 });
+      const offerWall = await sdk.getOfferWall(publisherId, { limit: 100, user_unique_id: 12345678 });
       setOffers(offerWall);
       setIsLoading(false)
     } catch (error) {
