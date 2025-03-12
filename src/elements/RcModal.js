@@ -11,12 +11,14 @@ const RcModal = (props) => {
         hideModal(data)
     };
 
-    const openLink = (url) => {
+    const openLink = (url, type = "") => {
         window.open(url, '_blank');
-        // setTimeout(() => {
-        //     modalData && modalData.getUserRewardsBalance && modalData.getUserRewardsBalance()
-        //     smartAlert({title: "Success", message: "Offer has been claimed",type: 2});
-        // }, 3000);
+        setTimeout(() => {
+            modalData && modalData.getUserRewardsBalance && modalData.getUserRewardsBalance()
+            if(type === "click_reward"){
+                smartAlert({title: "Success", message: "Offer has been claimed",type: 2});
+            }
+        }, 3000);
     }
 
     return (
@@ -50,7 +52,7 @@ const RcModal = (props) => {
                                                 <h3 className='fs-12 fw-500'>{offer.title}</h3>
                                                 <p className='fs-10 mb-0'>{offer.description}</p>
                                             </div>
-                                            <div className='coin-badge p-1 d-flex align-items-center link_url' onClick={() => openLink(offer.url)}>
+                                            <div className='coin-badge p-1 d-flex align-items-center link_url' onClick={() => openLink(offer.url, offer.adtype_action)}>
                                                 <p className='fs-10 mb-0 d-flex align-items-center justify-content-start ms-2 w-100'>
                                                     <span className='w_coin_icn d-inline-block'><RcImage src={icons.coinIcon} alt="icon" className='img-fluid me-2' /></span>
                                                     <span className='ms-1'>{offer.reward} {offer.currency}</span>
